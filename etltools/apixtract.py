@@ -1,17 +1,23 @@
-from sodapy import Socrata
 import pandas as pd
-from configs
+from etltools.configs import connect_api
+from time import sleep
 
 
-def get_client():
+def get_client(limiter):
     # Example authenticated client (needed for non-public datasets):
-    client = connect_api('https://data.cityofnewyork.us/resource/waf7-5gvc.json', '7KJkvCjyntX41xdWFhHqTyQ7i')
+    client = connect_api('data.cityofnewyork.us', '7KJkvCjyntX41xdWFhHqTyQ7i')
 
     # First 2000 results, returned as JSON from API / converted to Python list of
     # dictionaries by sodapy.
-    results = client.get(limit=2000)
-    print(results)
+    results = client.get('waf7-5gvc', limit=limiter)
+    sleep(2)
 
     # Convert to pandas DataFrame
     results_df = pd.DataFrame.from_records(results)
-    return results_df
+    return results
+
+
+if __name__ == "__main__":
+    a = get_client(100)
+    print(a)
+    print('done')
